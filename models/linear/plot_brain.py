@@ -28,9 +28,15 @@ from nilearn import plotting
 #plotting.plot_glass_brain(all_t_obj)
 #plt.imshow(brainA[:,:,30,0])
 #plt.colorbar()
-PATH_TO_TMAP = os.path.join('/home/ubuntu/tk_trial/','v_all_subj_ind_t.nii.gz') # where to find the data
-WRITE_PATH = '/home/ubuntu/tk_trial/' # where to store the global t statistics map
+PATH_DIR = '/home/ubuntu/tk_trial/LSTM/results/cross_subject/'
+COMP_NUM = 90
+for i in range(COMP_NUM):
+    try:
+        PATH_TO_TMAP = os.path.join(PATH_DIR,f'groupbeta_{i}.nii.gz') # where to find the data
+        WRITE_IMG_PATH = f'/home/ubuntu/tk_trial/brain_t_plot_COMP{i}.jpg' # where to store the global t statistics map
 
-emo_stats = Brain_Data(PATH_TO_TMAP)
-emo_stats.plot()
-plt.savefig("brain_t_test.jpg")
+        emo_stats = Brain_Data(PATH_TO_TMAP)
+        emo_stats.plot()
+        plt.savefig(WRITE_IMG_PATH)
+    except:
+        continue;

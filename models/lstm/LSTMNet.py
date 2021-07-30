@@ -3,7 +3,6 @@ function ConvLSTMCell and ConvLSTM were slightly modified from existing github r
 https://github.com/ndrplz/ConvLSTM_pytorch. 
 Liscence: MIT
 """
-
 import torch.nn as nn
 import torch
 
@@ -92,7 +91,6 @@ class ConvLSTMCell(nn.Module):
 
 
 class ConvLSTM(nn.Module):
-
     """
     Parameters:
         input_dim: Number of channels in input
@@ -227,26 +225,14 @@ class fMRICNNdecoder(nn.Module):
         """
         super(fMRICNNdecoder, self).__init__()
 
-        #self.decoding = nn.Sequential(*[
-            #nn.Conv3d(in_channels=input_dim, out_channels=64,kernel_size=3),
-            #nn.BatchNorm3d(num_features=64),
-            #nn.ReLU(inplace=True),
-            #nn.Conv3d(in_channels=64, out_channels=32,kernel_size=3),
-            #nn.BatchNorm3d(num_features=32),
-            #nn.ReLU(inplace=True),
-            #nn.Conv3d(in_channels=input_dim, out_channels=6,kernel_size=3),
-            #nn.BatchNorm3d(num_features=6),
-            #nn.ReLU(inplace=True)
-        #])
-
         self.classifier = nn.Sequential(*[
             #nn.Linear(21600,1024),
             #nn.ReLU(inplace=True),
             #nn.Dropout(0.5),
-            nn.Linear(256,64),
+            nn.Linear(64,32),
             nn.ReLU(inplace=True),
             nn.Dropout(0.5),
-            nn.Linear(64,output_dim)     
+            nn.Linear(32,output_dim)     
         ])
 
         self.final_activ = nn.Sigmoid()
@@ -284,13 +270,13 @@ class featureEncoder(nn.Module):
         return outs
         
         
-class fMRICNNLSRM(nn.Module):
+class fMRICNNLSTM(nn.Module):
 
-    def __init__(self, input_dim, intermediate_dim, output_dim, hidden_dim, input_time):
-        super(fMRICNNLSRM,self).__init__()
+    def __init__(self, input_dim, intermediate_dim, hidden_dim, output_dim, input_time):
+        super(fMRICNNLSTM,self).__init__()
         self.input_time = input_time
         self.encoders1 = nn.ModuleList([fMRICNNencoder(input_dim=input_dim, output_dim=intermediate_dim) for _ in range(input_time)])
-        self.LSTMs = ConvLSTM(intermediate_dim, hidden_dim, (3,3,3), 2, True, True, False)
+        self.LSTMs = ConvLSTM(intermediate_dim, hidden_dim, (3,3,3), 2, True, True, False) # Conv LSTM
         self.decoders1 = nn.ModuleList([fMRICNNdecoder(input_dim=hidden_dim, output_dim=output_dim) for _ in range(input_time)])
 
     def forward(self, x):
@@ -305,15 +291,14 @@ class fMRICNNLSRM(nn.Module):
 
 if __name__ == '__main__':
 
-    #x = torch.randn(8, 200, 1, 71, 90, 68)
+    #=========TEST BRAIN INPUT
+    # x = torch.randn(8, 200, 1, 60, 60, 60)
+    # TIME_LENGTH = 200
+    # my_model = fMRICNNLSTM(input_dim=1, intermediate_dim=64, hidden_dim=64, output_dim=40, input_time=TIME_LENGTH)#.to(device)
+    # layer_outputs = my_model(x)
+    # print("sounds good")
 
-    #convlstm = fMRICNNLSRM(input_dim=1, intermediate_dim=128, output_dim=16, hidden_dim=16, input_time=24)
-    #TIME_LENGTH = 200
-    #my_model = fMRICNNLSRM(input_dim=1, intermediate_dim=64, output_dim=16, hidden_dim=16, input_time=TIME_LENGTH)#.to(device)
-
-    #layer_outputs = my_model(x)
-    #h = last_states[0][0]  # 0 for layer index, 0 for h index
-    #print("sounds good")
+    #########TEST FEAT INPUT
     rand1 = torch.randn(100,800,2000)
     myNet = featureEncoder(input_dim=800,  hidden_dim=128, output_dim=40, time_resolution=24)
     outs = myNet(rand1)

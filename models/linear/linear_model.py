@@ -1,7 +1,6 @@
 """
 Linear Lasso-PCR, outputs coefficient
 """
-
 from sklearn.linear_model import Lasso
 from sklearn.decomposition import PCA
 from sklearn.pipeline import Pipeline
@@ -17,57 +16,20 @@ from joblib import Parallel, delayed
 from tqdm import tqdm
 
 # Read in video features
-VID_DIR = '/home/ubuntu/hcp_data/stimuli_jpg/'
+VID_DIR = '/home/ubuntu/hcp_data/jpg_256/split_videos_256x256/'
 fMRI_DIR = '/home/ubuntu/hcp_data/ten_subjects/'
 WRITE_PATH = '/home/ubuntu/tk_trial/' # where to write the lasso coefficient files
 NJOBS = 4 # parallel processing of the lasso coefs
 
-
-video1 = '7T_MOVIE1_CC1_v2_224x224_72_last_layer.npy'
-video2 = '7T_MOVIE2_HO1_v2_224x224_72_last_layer.npy'
-video3 = '7T_MOVIE3_CC2_v2_224x224_72_last_layer.npy'
-video4 = '7T_MOVIE4_HO2_v2_224x224_72_last_layer.npy'
+video1 = '7T_MOVIE1_CC1_v2_256x256_all_act_ll.npy'
+video2 = '7T_MOVIE2_HO1_v2_256x256_all_act_ll.npy'
+video3 = '7T_MOVIE3_CC2_v2_256x256_all_act_ll.npy'
+video4 = '7T_MOVIE4_HO2_v2_256x256_all_act_ll.npy'
 
 vid1_feat = np.load(VID_DIR + video1, allow_pickle=True)
 vid2_feat = np.load(VID_DIR + video2, allow_pickle=True)
 vid3_feat = np.load(VID_DIR + video3, allow_pickle=True)
 vid4_feat = np.load(VID_DIR + video4, allow_pickle=True)
-
-# plt.plot(vid1_feat.T[0,:],color='red')
-# plt.plot(np.arange(0,22103,24), tensor_rolled_data[0,:],color='blue')
-# plt.savefig("/home/ubuntu/tk_trial/sanity.jpg")
-
-#=====================preprocess x data
-# from nilearn.masking import compute_gray_matter_mask, apply_mask
-
-# for i in range(vid1_feat.shape[1]):
-#     plt.plot(vid1_feat[:,i])
-# plt.savefig("/home/ubuntu/tk_trial/try1.jpg")
-# fmridat = nib.load(all_subjects[0])
-# #fmridd = np.expand_dims(fmridat.get_fdata(),0)
-# print('get data')
-
-#TODO
-# preprocess and do resampling data
-# def _preprocess(filenames, writepath):
-#     """
-#     preprocess data, resampling, apply grey matter mask, write to local dir
-#     """
-#     return;
-
-#mask_img = nib.load('/home/ubuntu/tk_trial/MNI152NLin2009cAsym_desc-thr25gray1mm_mask.nii')
-# = compute_gray_matter_mask(func_filename)
-#masked_data = apply_mask(func_filename, mask_img)
-
-# /home/ubuntu/hcp_data/ten_subjects/109123/MNINonLinear/Results/tfMRI_MOVIE1_7T_AP/tfMRI_MOVIE1_7T_AP_hp2000_clean.nii.gz
-
-#make the x data (fmri for each movie)
-#need to 1. mask gray matter out, 2. downsample voxel size to 3/4 mm
-
-# fmri_cbd_dat = (fmri_cbd_dat - np.mean(fmri_cbd_dat,axis=1,keepdims=True))/np.std(fmri_cbd_dat,axis=1,keepdims=True)
-# VxT
-
-print('get data')
 
 def _prepare_xdat(movie_num):
     all_subjects = glob.glob(fMRI_DIR + f'*/MNINonLinear/Results/tfMRI_MOVIE{movie_num}_7T_*/tfMRI_MOVIE{movie_num}_7T_*_hp2000_clean.nii.gz')
@@ -104,11 +66,11 @@ ydat_downsample = (ydat_downsample - np.mean(ydat_downsample,axis=0))/np.std(yda
 PCA_model = PCA(0.95)
 vid_pca = PCA_model.fit_transform(ydat_downsample.T)
 
-# pca = PCA().fit(ydat_downsample.T)
-# plt.plot(np.cumsum(pca.explained_variance_ratio_))
-# plt.xlabel('number of components')
-# plt.ylabel('cumulative explained variance')
-# plt.savefig("/home/ubuntu/tk_trial/pca_explained.jpg")
+pca = PCA().fit(ydat_downsample.T)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.xlabel('number of components')
+plt.ylabel('cumulative explained variance')
+plt.savefig("/home/ubuntu/tk_trial/pca_explained.jpg")
 
 # x: PCAxT
 # y: VxT
@@ -130,10 +92,10 @@ def run_lasso_regrs(X,Y):
 
 for i, ind_name in enumerate(all_subj_names):
 
-    if os.path.exists(WRITE_PATH + f'lasso_coefs-{ind_name}.pkl'):
-        continue;
+    #if os.path.exists(WRITE_PATH + f'lasso_coefs-{ind_name}.pkl'):
+    #    continue;
         
-    tmp_subj_dir = [m for m in all_subjects if ind_name in m]
+    tmp_subj_dir = sorted([m for m in all_subjects if ind_name in m])[0:2] #first two videos
 
     fmri_cbd_dat = None
     for subjj in tmp_subj_dir:
@@ -148,7 +110,7 @@ for i, ind_name in enumerate(all_subj_names):
 
     fmri_cbd_dat = np.swapaxes(fmri_cbd_dat.reshape(-1,fmri_cbd_dat.shape[-1]),0,1)
     
-    LASSO_coefficient = np.zeros((vid_pca.shape[1],fmri_cbd_dat.shape[1]))
+    # LASSO_coefficient = np.zeros((vid_pca.shape[1],fmri_cbd_dat.shape[1]))
 
     lasso_coeffs = Parallel(n_jobs=NJOBS)(delayed(run_lasso_regrs)(X=vid_pca, Y=fmri_cbd_dat[:,i]) for i in tqdm(range(fmri_cbd_dat.shape[1])))
 
