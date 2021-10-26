@@ -1,0 +1,50 @@
+name: algonauts3
+channels:
+  - defaults
+dependencies:
+  - backports
+  - pandas
+  - brotlipy
+  - iopath
+  - ipython
+  - pandoc
+  - async_generator
+  - jupyter
+  - bleach
+  - pytorch
+  - pydicom
+  - scikit-learn
+  - cudatoolkit=11.1.1
+  - backcall
+  - av
+  - ipykernel
+  - anyio
+  - blas
+  - jpeg=9b
+  - babel
+  - matplotlib
+  - hdf5
+  - attrs
+  - nibabel
+  - python[version='>=3.7']
+  - tornado
+  - backports.functools_lru_cache
+  - torchaudio
+  - joblib
+  - numpy
+  - pycparser
+  - nilearn
+  - jupyterlab
+  - jsonschema
+  - h5py
+  - pillow
+  - seaborn
+  - pip
+  - jinja2
+  - json5
+  - argon2-cffi
+  - blas-devel
+  - torchvision
+  - tqdm
+  - scipy
+prefix: /home/spacetop/miniconda3/envs/algonauts3
