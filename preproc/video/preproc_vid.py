@@ -41,14 +41,17 @@ for action_dir in action_list:
             print("newpath: ", new_path)
             new_filename = os.path.join(new_path, f'video_{index:06d}.mp4')
 
-            ## ffmpeg stuff
-            stream = (ffmpeg.input(old_videoname).filter('scale', width = 365, height = 258).filter('crop', 256, 256).output(get_new_videoname(new_filename)))
+            ## ffmpeg - crop and rescale
+            stream = (ffmpeg.input(old_videoname).filter('scale', width = 365, height = 258).filter('crop', 256, 256).output(get_new_videoname(new_filename))).overwrite_output()
             ffmpeg.run(stream)
 
-            # TODO Nov 02:
-            # ffmpeg split into frames
-            # here's the code in bash
-            # ffmpeg -i ${OUTDIR}/${FILENAME}/${FILENAME}_256x256.mp4 -r 24 ${OUTDIR}/${FILENAME}/frames/frame%06d.jpg -hide_banner
+            # ffmpeg - split into frames
+            frame_name = f'video_{index:06d}'
+            frame_dir = os.path.join(new_path, f'video_{index:06d}')
+            Path(frame_dir).mkdir(parents = True, exist_ok = True)
+            frames = ffmpeg.input(os.path.join(new_path,f'video_{index:06d}_256x256.mp4')).filter('fps', fps='24', round='up').output(os.path.join(frame_dir,f'frames_%06d.jpg', ), start_number = 0 ).overwrite_output()
+            ffmpeg.run(frames)
+           
             break
     break
 
