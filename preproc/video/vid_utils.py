@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from decord import VideoReader
 from decord import cpu
-import torch
+# import torch
 
 def describe_video(path):
     cap = cv2.VideoCapture(path)
@@ -20,6 +20,6 @@ def read_mp4_video(file):
     indices = np.linspace(0,total_frames-1,total_frames,dtype=np.int32)
     for seg_ind in indices:
         images.append(vr[seg_ind].asnumpy())
-    video = torch.Tensor(np.array(images))
+    # video = torch.Tensor(np.array(images))
                  #channels, frames, height, width
-    return video.permute(3,0,1,2)
+    # return video.permute(3,0,1,2)
