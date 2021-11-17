@@ -4,7 +4,8 @@ TRAIN:
   CHECKPOINT_FILE_PATH: "/mnt/c/Users/Spacetop/Documents/heejung/feature-encoding/models/slowfast_actions/SLOWFAST_actions_algonauts.yaml"
   CHECKPOINT_TYPE: caffe2
 DATA:
-  PATH_TO_DATA_DIR: "/mnt/c/Users/Spacetop/Documents/Moments_in_Time_Raw_v2/Moments_in_Time_Raw/resampled/training/adult+female+singing"
+  PATH_TO_DATA_DIR: "/mnt/c/Users/Spacetop/Documents/Moments_in_Time_Raw_v2/Moments_in_Time_Raw/resampled/training/adult_female_singing_TEST"
+  # PATH_TO_DATA_DIR: "/mnt/c/Users/Spacetop/Documents/Moments_in_Time_Raw_v2/Moments_in_Time_Raw/resampled/training/adult+female+singing/video_000000"
   PATH_PREFIX: ""
   NUM_FRAMES: 72
   SAMPLING_RATE: 2
@@ -68,4 +69,4 @@ DETECTION:
 NUM_GPUS: 1
 NUM_SHARDS: 1
 RNG_SEED: 0
-OUTPUT_DIR: "C://Users//Spacetop//Documents//Moments_in_Time_Raw_v2//Moments_in_Time_Raw//results//"
+OUTPUT_DIR: "/mnt/c/Users/Spacetop/Documents/heejung/results"
