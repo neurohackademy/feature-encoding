@@ -20,12 +20,14 @@ def get_new_videoname(videoname):
 	return new_videoname
 
 # %%
+# main_dir = 'C:\\Users\\Spacetop\\Documents\\Moments_in_Time_Raw_v2\\Moments_in_Time_Raw'
 main_dir = '/mnt/c/Users/Spacetop/Documents/Moments_in_Time_Raw_v2/Moments_in_Time_Raw'
 in_dir = os.path.join(main_dir, 'training')
 out_dir = os.path.join(main_dir,'resampled', 'training')
 
 action_list = sorted(glob.glob(os.path.join(in_dir,'*'))) # asking, applauding
 
+# %%
 for action_dir in action_list:
     print("action dir: ", action_dir)
     action_name = os.path.basename(action_dir)
@@ -54,4 +56,3 @@ for action_dir in action_list:
            
             # break
     # break
-
