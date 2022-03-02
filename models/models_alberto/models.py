@@ -7,13 +7,13 @@ from pytorchvideo.transforms import (
     UniformCropVideo
 )
 import torchvision
-from modules import vid_utils
+import vid_utils
 from torchvision.transforms import Compose, Lambda
 from torchvision.transforms._transforms_video import (
     CenterCropVideo,
     NormalizeVideo,
 )
-from . import vid_utils 
+
 from tqdm import tqdm
 import os
 import numpy as np 
