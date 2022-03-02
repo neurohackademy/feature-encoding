@@ -24,7 +24,7 @@ main_dir = '/mnt/c/Users/Spacetop/Documents/Moments_in_Time_Raw_v2/Moments_in_Ti
 in_dir = os.path.join(main_dir, 'training')
 out_dir = os.path.join(main_dir,'resampled', 'training')
 
-action_list = glob.glob(os.path.join(in_dir,'*')) # asking, applauding
+action_list = sorted(glob.glob(os.path.join(in_dir,'*'))) # asking, applauding
 
 for action_dir in action_list:
     print("action dir: ", action_dir)
@@ -52,6 +52,6 @@ for action_dir in action_list:
             frames = ffmpeg.input(os.path.join(new_path,f'video_{index:06d}_256x256.mp4')).filter('fps', fps='24', round='up').output(os.path.join(frame_dir,f'frames_%06d.jpg', ), start_number = 0 ).overwrite_output()
             ffmpeg.run(frames)
            
-            break
-    break
+            # break
+    # break
 
