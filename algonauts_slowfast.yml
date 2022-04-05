@@ -167,6 +167,3 @@ dependencies:
     - git+https://github.com/facebookresearch/fvcore
     - git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI
     - git+https://github.com/facebookresearch/detectron2
-
-
-prefix: C:\Users\Alberto\.conda\envs\algonauts
