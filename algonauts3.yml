@@ -1,4 +1,4 @@
-name: algonauts3
+name: features
 channels:
   - defaults
 dependencies:
